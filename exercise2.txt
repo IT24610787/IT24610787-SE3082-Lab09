@@ -1,0 +1,10 @@
+Exercise 2 - THINK questions
+
+1. Why do we need separate variables d_a, d_b, d_c on the device? Why can the kernel not use a, b, c directly?
+The CPU (host) and the GPU (device) have separate memories. The kernel runs on the GPU and can only access GPU memory, so it cannot use the host variables a, b, c. The data must first be copied into device memory (d_a, d_b), and the result copied back from d_c.
+
+2. Why do we pass &a to cudaMemcpy but d_a to the kernel launch?
+a is an ordinary int on the host, so cudaMemcpy needs its address (&a) to know where to copy from. d_a is already a pointer that holds a GPU memory address, and the kernel expects pointers, so d_a is passed as it is.
+
+3. How many threads run the add kernel? What would you change to run it with 10 threads, and would the answer change?
+add<<<1, 1>>> runs one block with one thread, so one thread. To use 10 threads I would change the launch to add<<<1, 10>>>. The answer would not change (still 9), because all 10 threads would run the same line *c = *a + *b and write the same value to the same location. It would only be redundant work.

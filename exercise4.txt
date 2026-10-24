@@ -1,0 +1,19 @@
+Exercise 4 - EXPERIMENT (find the limit) and THINK
+
+Experiment: N changed from 512 to 2048
+What was printed:
+  Kernel launch failed: invalid argument
+  0) 83 + 51 = 0
+  2047) 31 + 41 = 0
+  Verification: 2048 mismatches out of 2048
+
+Which part of the program told me?
+The cudaGetLastError() check right after the kernel launch. It returned an error, and cudaGetErrorString(err) printed the message.
+
+Which GPU limit did I hit?
+The maximum of 1024 threads per block. With N = 2048 the launch was addT<<<1, 2048>>>, which asks for 2048 threads in one block. That is an invalid launch configuration, so the kernel never ran. The output array c never received results (it showed 0), so all 2048 results were mismatches.
+
+Note: the lab sheet describes the message as "invalid configuration argument", but my run printed "invalid argument". The cause is the same (too many threads per block). I changed N back to 512 afterwards.
+
+THINK: One block of threads cannot cover a very large array.
+A single block holds at most 1024 threads, so one block can only handle up to 1024 elements this way. For larger arrays we need many blocks, each with many threads, which is what Exercise 5 does.

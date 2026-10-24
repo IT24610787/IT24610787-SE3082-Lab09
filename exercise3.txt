@@ -1,0 +1,7 @@
+Exercise 3 - PREDICT BEFORE YOU RUN
+
+How many blocks and how many threads in total does add<<<N, 1>>> launch? What does a warp of 32 mean for a block that contains only one thread?
+
+add<<<N, 1>>> with N = 512 launches 512 blocks with 1 thread each, so 512 threads in total.
+
+A GPU executes threads in groups of 32 called warps. A block with only one thread still occupies a whole warp, so 31 of the 32 lanes sit idle. The program is correct, but it wastes most of the hardware. This is why later exercises use many threads per block.
